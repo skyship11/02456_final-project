@@ -1,0 +1,156 @@
+2.1. Warm up: a fast matrix-based approach to computing the output from a neural network
+
+(cid:12)
+(cid:12)
+(cid:12) 41
+
+j = σ
+al
+
+(cid:130)
+
+(cid:88)
+
+k
+
+wl
+
+1
+
+jkal
+
+k + bl
+
+−
+
+j
+
+(cid:140)
+
+,
+
+(2.1)
+
+2
+
+1)-th layer. To rewrite this expression in a
+where the sum is over all neurons k in the (l
+−
+matrix form we deﬁne a weight matrix wl for each layer, l. The entries of the weight matrix
+wl are just the weights connecting to the l-th layer of neurons, that is, the entry in the j-th
+row and k-th column is wl
+jk. Similarly, for each layer l we deﬁne a bias vector, bl . You can
+probably guess how this works – the components of the bias vector are just the values bl
+j,
+one component for each neuron in the l-th layer. And ﬁnally, we deﬁne an activation vector
+al whose components are the activations al
+j. The last ingredient we need to rewrite 2.1 in a
+matrix form is the idea of vectorizing a function such as σ. We met vectorization brieﬂy in
+the last chapter, but to recap, the idea is that we want to apply a function such as σ to every
+element in a vector v. We use the obvious notation σ(v) to denote this kind of elementwise
+application of a function. That is, the components of σ(v) are just σ(v) j = σ(vj). As an
+example, if we have the function f (x) = x 2 then the vectorized form of f has the effect
+
+(cid:130)(cid:150)
+
+f
+
+2
+
+3
+
+(cid:153)(cid:140)
+
+(cid:150)
+
+=
+
+f (2)
+f (3)
+
+(cid:153)
+
+(cid:150)
+
+=
+
+(cid:153)
+
+,
+
+4
+
+9
+
+(2.2)
+
+that is, the vectorized f just squares every element of the vector.
+
+With these notations in mind, Equation 2.1 can be rewritten in the beautiful and compact
+
+vectorized form
+
+al
+
+= σ(wl al
+
+−
+
+1
+
++ bl
+
+).
+
+(2.3)
+
+This expression gives us a much more global way of thinking about how the activations in
+one layer relate to activations in the previous layer: we just apply the weight matrix to the
+activations, then add the bias vector, and ﬁnally apply the σ function1. That global view is
+often easier and more succinct (and involves fewer indices!) than the neuron-by-neuron
+view we’ve taken to now. Think of it as a way of escaping index hell, while remaining precise
+about what’s going on. The expression is also useful in practice, because most matrix libraries
+provide fast ways of implementing matrix multiplication, vector addition, and vectorization.
+Indeed, the code (see 1.6) in the last chapter made implicit use of this expression to compute
+the behaviour of the network.
+
+When using Equation 2.3 to compute al , we compute the intermediate quantity z l
+
+1
+
+−
+
+≡
+wl al
++ bl along the way. This quantity turns out to be useful enough to be worth naming:
+we call zl the weighted input to the neurons in layer l. We’ll make considerable use of
+the weighted input z l later in the chapter. Equation 2.3 is sometimes written in terms
+of the weighted input, as al
+(cid:80)
+
+j =
+j is just the weighted input to the activation function for neuron j
+
+). It’s also worth noting that z l has components z l
+
+j, that is, zl
+
+= σ(zl
+
+k + bl
+
+1
+
+k wl
+jkal
+−
+in layer l.
+
+1By the way, it’s this expression that motivates the quirk in the wl
+
+jk notation mentioned earlier. If we
+used j to index the input neuron, and k to index the output neuron, then we’d need to replace the weight
+matrix in Equation 2.3 by the transpose of the weight matrix. That’s a small change, but annoying, and
+we’d lose the easy simplicity of saying (and thinking) “apply the weight matrix to the activations”.
+
+
